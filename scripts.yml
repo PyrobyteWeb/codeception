@@ -1,0 +1,12 @@
+version: "2"
+
+services:
+  node: 
+    image: node:14-stretch
+    working_dir: /home/node/app
+    user: "${UID}:${GID}"
+    volumes:
+      - ./src:/home/node/app
+      - ./docker/npm:/.npm
+
+

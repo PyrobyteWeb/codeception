@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  php:
+    build:
+      context: ./docker/images/php
+    restart: always
+    working_dir: /var/www/html/src
+    volumes: 
+      - .:/var/www/html
+    links:
+      - selenium-hub
+    depends_on:
+      - selenium-hub
+
+  chrome:
+    image: selenium/node-chrome:4.0.0-rc-1-prerelease-20210804
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    ports:
+      - "6900:5900"
+
+  selenium-hub:
+    image: selenium/hub:4.0.0-rc-1-prerelease-20210804
+    container_name: selenium-hub
+    ports:
+      - "${COMPOSE_SELENIUM_PORT}:4444"
